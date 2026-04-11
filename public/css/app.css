@@ -1,0 +1,438 @@
+/* ================================================
+   ELSAFA TOUR DAN TRAVEL — Main Stylesheet
+   ================================================ */
+
+/* Variables */
+:root {
+    --navy:      #1a2b4a;
+    --navy-dark: #253d66;
+    --gold:      #C9A44A;
+    --gold-light:#fff8e6;
+    --light:     #f5f6fa;
+    --sidebar-w: 215px;
+}
+
+/* Base */
+* {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+body {
+    background: var(--light);
+}
+
+/* ================================================
+   SIDEBAR
+   ================================================ */
+#sidebar {
+    width: var(--sidebar-w);
+    min-height: 100vh;
+    background: var(--navy);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+}
+
+.sb-brand {
+    padding: 20px 16px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.sb-brand .b-name {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--gold);
+    letter-spacing: 1px;
+}
+.sb-brand .b-sub {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.45);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.sb-nav {
+    flex: 1;
+    padding: 10px 0;
+}
+.sb-nav .nav-item {
+    margin: 2px 8px;
+}
+.sb-nav .nav-link {
+    color: rgba(255, 255, 255, 0.6);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.15s;
+}
+.sb-nav .nav-link i {
+    font-size: 17px;
+}
+.sb-nav .nav-link:hover {
+    background: rgba(255, 255, 255, 0.07);
+    color: #fff;
+}
+.sb-nav .nav-link.active {
+    background: var(--gold);
+    color: #fff;
+}
+
+.sb-footer {
+    padding: 10px 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+.sb-footer .nav-link {
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 14px;
+    font-weight: 500;
+}
+.sb-footer .nav-link:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.07);
+}
+
+/* ================================================
+   MAIN CONTENT
+   ================================================ */
+#main {
+    margin-left: var(--sidebar-w);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Topbar */
+.topbar {
+    background: #fff;
+    border-bottom: 1px solid #e9ecef;
+    padding: 0 28px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+.topbar .page-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--navy);
+    margin: 0;
+}
+.topbar .admin-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--navy);
+}
+.topbar .admin-badge .bi-person-circle {
+    font-size: 26px;
+    color: #adb5bd;
+}
+.topbar .admin-badge .bi-chevron-down {
+    font-size: 11px;
+}
+
+/* Content area */
+.content {
+    padding: 24px 28px;
+    flex: 1;
+}
+
+/* ================================================
+   STAT CARDS
+   ================================================ */
+.stat-card {
+    border-radius: 12px;
+    padding: 20px 22px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+.stat-card.navy  { background: var(--navy); color: #fff; }
+.stat-card.green { background: #d4edda; color: #155724; }
+.stat-card.gold  { background: var(--gold-light); color: #856404; }
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 21px;
+    flex-shrink: 0;
+}
+.stat-card.navy  .stat-icon { background: rgba(255, 255, 255, 0.15); color: #fff; }
+.stat-card.green .stat-icon { background: #c3e6cb; color: #155724; }
+.stat-card.gold  .stat-icon { background: #fde68a; color: #92400e; }
+
+.stat-label {
+    font-size: 12px;
+    font-weight: 500;
+    opacity: 0.8;
+    margin-bottom: 2px;
+}
+.stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+/* ================================================
+   TABLE
+   ================================================ */
+.table-elsafa thead th {
+    background: var(--navy);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 12px 14px;
+    border: none;
+}
+.table-elsafa tbody td {
+    padding: 11px 14px;
+    font-size: 13.5px;
+    vertical-align: middle;
+    border-color: #f0f0f0;
+}
+.table-elsafa tbody tr:hover {
+    background: #fafafa;
+}
+
+/* ================================================
+   BADGES
+   ================================================ */
+.bdg {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+}
+.bdg-lunas      { background: #d4edda; color: #155724; }
+.bdg-belum      { background: #fff3cd; color: #856404; }
+.bdg-aktif      { background: #d4edda; color: #155724; }
+.bdg-nonaktif   { background: #f8d7da; color: #721c24; }
+.bdg-berangkat  { background: #d1ecf1; color: #0c5460; }
+.bdg-sudah      { background: #d4edda; color: #155724; }
+
+/* ================================================
+   FILTER BAR
+   ================================================ */
+.filter-bar {
+    background: #fffbf0;
+    border: 1px solid #fde68a;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 16px;
+}
+
+/* ================================================
+   BUTTONS
+   ================================================ */
+.btn-elsafa {
+    background: var(--navy);
+    color: #fff;
+    border: none;
+    font-weight: 600;
+    font-size: 14px;
+    border-radius: 8px;
+}
+.btn-elsafa:hover {
+    background: var(--navy-dark);
+    color: #fff;
+}
+
+/* Action buttons (icon only, small) */
+.btn-act {
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    cursor: pointer;
+    transition: opacity 0.15s;
+}
+.btn-act:hover { opacity: 0.85; }
+
+.btn-detail { background: var(--navy); color: #fff; }
+.btn-edit   { background: #198754; color: #fff; }
+.btn-del    { background: #dc3545; color: #fff; }
+
+/* ================================================
+   CARDS (generic)
+   ================================================ */
+.card-elsafa {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+.card-elsafa .card-body {
+    padding: 24px;
+}
+
+/* ================================================
+   FORM
+   ================================================ */
+.form-label {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 6px;
+}
+.form-control,
+.form-select {
+    font-size: 14px;
+    border-radius: 8px;
+    border-color: #dee2e6;
+    padding: 9px 12px;
+}
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--navy);
+    box-shadow: 0 0 0 3px rgba(26, 43, 74, 0.1);
+}
+
+/* Upload dokumen */
+.upload-box {
+    border: 2px dashed #dee2e6;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    background: #fafafa;
+    transition: border-color 0.2s;
+    cursor: pointer;
+}
+.upload-box:hover {
+    border-color: var(--navy);
+}
+.upload-box .upload-icon {
+    font-size: 32px;
+    color: #adb5bd;
+    margin-bottom: 8px;
+}
+.upload-box p {
+    font-size: 13px;
+    color: #6c757d;
+    margin: 0;
+}
+
+/* Preview gambar dokumen */
+.doc-preview {
+    width: 100%;
+    max-height: 180px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+}
+
+/* ================================================
+   PROFILE CARD (Detail Jamaah)
+   ================================================ */
+.profile-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    padding: 24px;
+    text-align: center;
+}
+.profile-avatar {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #e9ecef;
+    margin-bottom: 12px;
+}
+.profile-avatar-placeholder {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    color: #adb5bd;
+    margin: 0 auto 12px;
+}
+.profile-name {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 4px;
+}
+.profile-kontak {
+    font-size: 13px;
+    color: #6c757d;
+    margin-bottom: 10px;
+}
+
+
+/* ================================================
+   PAGINATION
+   ================================================ */
+.pagination .page-link {
+    color: var(--navy);
+    border-radius: 6px !important;
+    margin: 0 2px;
+    border-color: #dee2e6;
+    font-size: 13px;
+}
+.pagination .page-item.active .page-link {
+    background: var(--navy);
+    border-color: var(--navy);
+    color: #fff;
+}
+.pagination .page-link:hover {
+    background: var(--gold-light);
+    color: var(--navy);
+}
+
+/* ================================================
+   MODAL
+   ================================================ */
+.modal-header {
+    background: var(--gold-light);
+    border-bottom: 1px solid #fde68a;
+}
+.modal-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--navy);
+}
+.modal-footer .btn-elsafa {
+    padding: 8px 24px;
+}
+
+/* ================================================
+   ALERT
+   ================================================ */
+.alert {
+    font-size: 14px;
+    border-radius: 8px;
+}
+
+/* ================================================
+   UTILITY
+   ================================================ */
+.text-navy { color: var(--navy) !important; }
+.text-gold { color: var(--gold) !important; }
+.bg-navy   { background: var(--navy) !important; }
+.bg-gold   { background: var(--gold) !important; }
+.fw-600    { font-weight: 600 !important; }
+.fw-700    { font-weight: 700 !important; }
+.rounded-10 { border-radius: 10px !important; }
+.rounded-12 { border-radius: 12px !important; }
