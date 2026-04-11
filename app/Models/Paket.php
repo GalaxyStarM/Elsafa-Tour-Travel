@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -11,49 +10,17 @@ class Paket extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'nama',
-        'jenis',
-        'harga',
-        'status',
-        'tanggal_keberangkatan',
-        'kuota',
+        'nama', 'jenis', 'deskripsi', 'harga',
+        'tanggal_berangkat', 'tanggal_kembali', 'kuota', 'status'
     ];
 
     protected $casts = [
-        'tanggal_keberangkatan' => 'date',
-        'harga' => 'integer',
-        'kuota' => 'integer',
+        'tanggal_berangkat' => 'date',
+        'tanggal_kembali'   => 'date',
     ];
 
-    // Relationship: Paket has many Jamaah
-    // public function jamaah()
-    // {
-    //     return $this->hasMany(Jamaah::class);
-    // }
-
-    // Count jamaah
-    public function getJumlahJamaahAttribute()
+    public function jamaah()
     {
-        return $this->jamaah()->count();
-    }
-
-    // Scope: aktif
-    public function scopeAktif($query)
-    {
-        return $query->where('status', 'aktif');
-    }
-
-    // Format harga to Rupiah
-    public function getHargaFormattedAttribute()
-    {
-        return 'Rp ' . number_format($this->harga, 0, ',', '.');
-    }
-
-    // Format tanggal
-    public function getTanggalFormattedAttribute()
-    {
-        return $this->tanggal_keberangkatan
-            ? $this->tanggal_keberangkatan->format('d M Y')
-            : '-';
+        return $this->hasMany(Jamaah::class);
     }
 }
