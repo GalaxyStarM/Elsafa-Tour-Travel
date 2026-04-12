@@ -2,17 +2,23 @@
    ELSAFA TOUR DAN TRAVEL — Main Stylesheet
    ================================================ */
 
-/* Variables */
+/* ================================================
+   VARIABLES
+   ================================================ */
 :root {
     --navy:      #1a2b4a;
     --navy-dark: #253d66;
     --gold:      #C9A44A;
     --gold-light:#fff8e6;
     --light:     #f5f6fa;
+    --green:     #198754;
+    --red:       #dc3545;
     --sidebar-w: 215px;
 }
 
-/* Base */
+/* ================================================
+   BASE
+   ================================================ */
 * {
     font-family: 'Plus Jakarta Sans', sans-serif;
 }
@@ -188,8 +194,70 @@ body {
 }
 
 /* ================================================
+   PROGRESS BAR (Dashboard Ringkasan Pembayaran)
+   ================================================ */
+.progress-wrap { margin-top: 4px; }
+
+.progress-track {
+    height: 10px;
+    background: #e9ecef;
+    border-radius: 20px;
+    overflow: hidden;
+}
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--navy) 0%, var(--gold) 100%);
+    border-radius: 20px;
+    min-width: 4px;
+    transition: width 0.5s ease;
+}
+.progress-label {
+    font-size: 12px;
+    color: #6c757d;
+    margin-top: 4px;
+}
+
+/* ================================================
+   ALERT PERHATIAN (Dashboard)
+   ================================================ */
+.alert-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 500;
+    border: 1.5px solid transparent;
+    transition: opacity 0.15s;
+}
+.alert-item:hover { opacity: 0.82; }
+.alert-item i { font-size: 16px; flex-shrink: 0; }
+.alert-item .alert-text { flex: 1; }
+
+.alert-item.warning { background: #fff3cd; color: #856404; border-color: #fde68a; }
+.alert-item.danger  { background: #f8d7da; color: #721c24; border-color: #f5c6cb; }
+.alert-item.ok      { background: #f8f9fa; color: #6c757d; border-color: #e9ecef; }
+
+.alert-count {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 20px;
+    flex-shrink: 0;
+}
+.count-warning { background: #ffc107; color: #212529; }
+.count-danger  { background: #dc3545; color: #fff; }
+.count-ok      { background: #dee2e6; color: #6c757d; }
+
+/* ================================================
    TABLE
    ================================================ */
+.table-elsafa {
+    width: 100%;
+    border-collapse: collapse;
+}
 .table-elsafa thead th {
     background: var(--navy);
     color: #fff;
@@ -197,12 +265,14 @@ body {
     font-weight: 600;
     padding: 12px 14px;
     border: none;
+    white-space: nowrap;
 }
 .table-elsafa tbody td {
     padding: 11px 14px;
     font-size: 13.5px;
     vertical-align: middle;
     border-color: #f0f0f0;
+    border-bottom: 1px solid #f0f0f0;
 }
 .table-elsafa tbody tr:hover {
     background: #fafafa;
@@ -224,6 +294,10 @@ body {
 .bdg-nonaktif   { background: #f8d7da; color: #721c24; }
 .bdg-berangkat  { background: #d1ecf1; color: #0c5460; }
 .bdg-sudah      { background: #d4edda; color: #155724; }
+.bdg-mandiri    { background: #dbeafe; color: #1e40af; }
+.bdg-mitra      { background: #ede9fe; color: #5b21b6; }
+.bdg-dewasa     { background: #e0e7ff; color: #3730a3; }
+.bdg-anak       { background: #fce7f3; color: #9d174d; }
 
 /* ================================================
    FILTER BAR
@@ -234,7 +308,70 @@ body {
     border-radius: 10px;
     padding: 14px 18px;
     margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
 }
+
+/* Filter dropdown popup */
+.filter-dropdown {
+    position: absolute;
+    top: 44px;
+    left: 0;
+    width: 260px;
+    background: #fff;
+    border: 1.5px solid #e9ecef;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.10);
+    padding: 14px;
+    z-index: 200;
+    display: none;
+}
+.filter-dropdown.show { display: block; }
+.filter-dropdown .filter-section-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+.filter-dropdown label {
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+    color: #374151;
+}
+
+/* Search input inside filter bar */
+.search-wrap {
+    flex: 1;
+    min-width: 200px;
+    position: relative;
+}
+.search-wrap .bi-search {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #adb5bd;
+    font-size: 14px;
+}
+.search-input {
+    width: 100%;
+    padding: 8px 12px 8px 36px;
+    border: 1.5px solid #fde68a;
+    border-radius: 8px;
+    font-size: 13.5px;
+    outline: none;
+    background: #fff;
+    transition: border-color 0.2s;
+}
+.search-input:focus { border-color: var(--gold); }
 
 /* ================================================
    BUTTONS
@@ -246,9 +383,36 @@ body {
     font-weight: 600;
     font-size: 14px;
     border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s;
 }
 .btn-elsafa:hover {
     background: var(--navy-dark);
+    color: #fff;
+}
+
+.btn-elsafa-outline {
+    background: transparent;
+    color: var(--navy);
+    border: 1.5px solid var(--navy);
+    font-weight: 600;
+    font-size: 14px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.15s;
+}
+.btn-elsafa-outline:hover {
+    background: var(--navy);
     color: #fff;
 }
 
@@ -268,16 +432,18 @@ body {
 .btn-act:hover { opacity: 0.85; }
 
 .btn-detail { background: var(--navy); color: #fff; }
-.btn-edit   { background: #198754; color: #fff; }
-.btn-del    { background: #dc3545; color: #fff; }
+.btn-edit   { background: var(--green); color: #fff; }
+.btn-del    { background: var(--red); color: #fff; }
 
 /* ================================================
-   CARDS (generic)
+   CARDS
    ================================================ */
 .card-elsafa {
     border: none;
     border-radius: 12px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    background: #fff;
+    overflow: hidden;
 }
 .card-elsafa .card-body {
     padding: 24px;
@@ -305,29 +471,69 @@ body {
     box-shadow: 0 0 0 3px rgba(26, 43, 74, 0.1);
 }
 
-/* Upload dokumen */
+/* Phone input (+62 prefix) */
+.phone-wrap {
+    display: flex;
+    align-items: center;
+    border: 1.5px solid #dee2e6;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+}
+.phone-wrap:focus-within { border-color: var(--navy); }
+
+.phone-prefix {
+    background: #f8f9fa;
+    padding: 9px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--navy);
+    border-right: 1.5px solid #dee2e6;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.phone-input {
+    border: none;
+    outline: none;
+    padding: 9px 12px;
+    font-size: 14px;
+    flex: 1;
+    width: 100%;
+}
+
+/* ================================================
+   UPLOAD — Dokumen & Foto
+   ================================================ */
+
+/* Upload box (drag & drop zone) */
 .upload-box {
     border: 2px dashed #dee2e6;
     border-radius: 10px;
-    padding: 20px;
+    padding: 24px 20px;
     text-align: center;
     background: #fafafa;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, background 0.2s;
     cursor: pointer;
 }
-.upload-box:hover {
+.upload-box:hover,
+.upload-box.dragover {
     border-color: var(--navy);
+    background: #f0f4ff;
 }
 .upload-box .upload-icon {
     font-size: 32px;
     color: #adb5bd;
     margin-bottom: 8px;
+    display: block;
 }
 .upload-box p {
     font-size: 13px;
     color: #6c757d;
-    margin: 0;
+    margin: 0 0 4px;
 }
+.upload-box small { font-size: 12px; color: #adb5bd; }
 
 /* Preview gambar dokumen */
 .doc-preview {
@@ -336,6 +542,7 @@ body {
     object-fit: cover;
     border-radius: 8px;
     border: 1px solid #dee2e6;
+    cursor: pointer;
 }
 
 /* ================================================
@@ -347,7 +554,69 @@ body {
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
     padding: 24px;
     text-align: center;
+    background: #fff;
 }
+
+/* Foto profil + tombol kamera */
+.photo-wrap {
+    position: relative;
+    width: 100px;
+    margin: 0 auto 12px;
+}
+.photo-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #e9ecef;
+    background: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    color: #adb5bd;
+    overflow: hidden;
+}
+.photo-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+.photo-camera-btn {
+    position: absolute;
+    bottom: 4px;
+    right: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--navy);
+    color: #fff;
+    border: 2px solid #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 13px;
+}
+.photo-del-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--red);
+    color: #fff;
+    border: 2px solid #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 11px;
+}
+
+/* Legacy profile classes (tetap ada untuk kompatibilitas) */
 .profile-avatar {
     width: 90px;
     height: 90px;
@@ -380,6 +649,26 @@ body {
     margin-bottom: 10px;
 }
 
+/* ================================================
+   DOKUMEN TABS (Detail Jamaah)
+   ================================================ */
+.doc-tabs .nav-link {
+    font-size: 13px;
+    font-weight: 600;
+    color: #6c757d;
+    border-radius: 6px 6px 0 0;
+    border: 1.5px solid transparent;
+    padding: 7px 14px;
+}
+.doc-tabs .nav-link.active {
+    color: var(--navy);
+    border-color: #dee2e6 #dee2e6 #fff;
+    background: #fff;
+}
+.doc-tabs .nav-link .bi-check-circle-fill {
+    font-size: 11px;
+    color: var(--green);
+}
 
 /* ================================================
    PAGINATION
@@ -401,6 +690,32 @@ body {
     color: var(--navy);
 }
 
+/* Pagination custom (non-Bootstrap, digunakan di beberapa view) */
+.page-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    border: 1.5px solid #dee2e6;
+    background: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    color: #374151;
+    text-decoration: none;
+    transition: all 0.15s;
+}
+.page-btn:hover,
+.page-btn.active {
+    background: var(--navy);
+    border-color: var(--navy);
+    color: #fff;
+}
+.page-btn.disabled {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
 /* ================================================
    MODAL
    ================================================ */
@@ -417,22 +732,62 @@ body {
     padding: 8px 24px;
 }
 
+/* Modal konfirmasi hapus */
+.delete-icon-wrap {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #f8d7da;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 14px;
+    font-size: 1.5rem;
+    color: var(--red);
+}
+
 /* ================================================
-   ALERT
+   FLASH MESSAGES
    ================================================ */
 .alert {
     font-size: 14px;
     border-radius: 8px;
 }
+.flash-success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.flash-error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
 
 /* ================================================
    UTILITY
    ================================================ */
-.text-navy { color: var(--navy) !important; }
-.text-gold { color: var(--gold) !important; }
-.bg-navy   { background: var(--navy) !important; }
-.bg-gold   { background: var(--gold) !important; }
-.fw-600    { font-weight: 600 !important; }
-.fw-700    { font-weight: 700 !important; }
+.text-navy  { color: var(--navy) !important; }
+.text-gold  { color: var(--gold) !important; }
+.text-green { color: var(--green) !important; }
+.text-red   { color: var(--red) !important; }
+.bg-navy    { background: var(--navy) !important; }
+.bg-gold    { background: var(--gold) !important; }
+.fw-600     { font-weight: 600 !important; }
+.fw-700     { font-weight: 700 !important; }
 .rounded-10 { border-radius: 10px !important; }
 .rounded-12 { border-radius: 12px !important; }
+.cursor-pointer { cursor: pointer; }
+.gap-6 { gap: 6px; }

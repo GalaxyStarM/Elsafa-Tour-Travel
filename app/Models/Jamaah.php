@@ -1,20 +1,30 @@
 <?php
+
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Jamaah extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $table = 'jamaah';
 
     protected $fillable = [
-        'nama_lengkap', 'kontak', 'paket_id', 'jenis_jamaah',
-        'mitra_id', 'status_jamaah', 'kategori_usia', 'foto'
+        'nama_lengkap',
+        'kontak',
+        'paket_id',
+        'jenis_jamaah',
+        'mitra_id',
+        'status_jamaah',
+        'kategori_usia',
+        'foto_profil',
     ];
+
+    // ──────────────────────────────────────────
+    // RELATIONS
+    // ──────────────────────────────────────────
 
     public function paket()
     {
@@ -31,40 +41,68 @@ class Jamaah extends Model
         return $this->hasMany(Pembayaran::class);
     }
 
+    /**
+     * Semua dokumen jamaah (KTP/KK/Paspor/Akta).
+     */
     public function dokumen()
     {
         return $this->hasMany(Dokumen::class);
     }
 
-    // Ambil dokumen tertentu, misal ->getDokumen('ktp')
+    /**
+     * Ambil dokumen berdasarkan jenisnya.
+     * Contoh: $jamaah->getDokumen('KTP')
+     */
     public function getDokumen(string $jenis): ?Dokumen
     {
-        return $this->dokumen->firstWhere('jenis', $jenis);
+        return $this->dokumen->firstWhere('jenis_dokumen', $jenis);
     }
 
-    // Cek kelengkapan dokumen berdasarkan kategori usia
+    // ──────────────────────────────────────────
+    // COMPUTED ATTRIBUTES
+    // ──────────────────────────────────────────
+
+    /**
+     * Daftar jenis dokumen yang diperlukan sesuai kategori usia.
+     */
+    public function getDokumenDiperlukanAttribute(): array
+    {
+        return Dokumen::getDokumenByKategori($this->kategori_usia);
+    }
+
+    /**
+     * Cek apakah semua dokumen yang diperlukan sudah diupload.
+     */
     public function getDokumenLengkapAttribute(): bool
     {
-        $dibutuhkan = Dokumen::dokumenDibutuhkan($this->kategori_usia);
-        $dimiliki   = $this->dokumen->pluck('jenis')->toArray();
-        return empty(array_diff($dibutuhkan, $dimiliki));
+        $diperlukan  = $this->dokumen_diperlukan;
+        $sudahAda    = $this->dokumen->pluck('jenis_dokumen')->toArray();
+
+        return empty(array_diff($diperlukan, $sudahAda));
     }
 
-    // Accessor pembayaran
-    public function getTotalBayarAttribute(): int
-    {
-        return (int) $this->pembayaran->sum('jumlah');
-    }
-
-    public function getSisaBayarAttribute(): int
-    {
-        $harga = $this->paket?->harga ?? 0;
-        return max(0, $harga - $this->total_bayar);
-    }
-
+    /**
+     * Status pembayaran otomatis berdasarkan total bayar vs harga paket.
+     */
     public function getStatusPembayaranAttribute(): string
     {
-        if (!$this->paket) return 'belum_lunas';
-        return $this->sisa_bayar <= 0 ? 'lunas' : 'belum_lunas';
+        if (!$this->paket) return 'Belum Lunas';
+        $total = $this->pembayaran->sum('jumlah_bayar');
+        return $total >= $this->paket->harga ? 'Lunas' : 'Belum Lunas';
+    }
+
+    public function getTotalPembayaranAttribute(): float
+    {
+        return (float) $this->pembayaran->sum('jumlah_bayar');
+    }
+
+    public function getKontakFormattedAttribute(): ?string
+    {
+        if (!$this->kontak) return null;
+        $no = preg_replace('/\D/', '', $this->kontak);
+        if (str_starts_with($no, '0')) {
+            $no = '62' . substr($no, 1);
+        }
+        return '+' . $no;
     }
 }

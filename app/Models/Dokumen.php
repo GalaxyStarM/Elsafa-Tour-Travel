@@ -1,40 +1,44 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Storage;
 
 class Dokumen extends Model
 {
-    use HasFactory;
-
     protected $table = 'dokumen';
 
-    protected $fillable = ['jamaah_id', 'jenis', 'file'];
+    protected $fillable = [
+        'jamaah_id',
+        'jenis_dokumen',
+        'file_path',
+        'nama_file',
+    ];
 
-    // Label display per jenis
-    public static function labelJenis(): array
-    {
-        return [
-            'ktp'       => 'KTP',
-            'kk'        => 'Kartu Keluarga',
-            'paspor'    => 'Paspor',
-            'akta_lahir'=> 'Akta Lahir',
-        ];
-    }
+    // Jenis dokumen yang dibutuhkan berdasarkan kategori usia
+    public const DOKUMEN_DEWASA = ['KTP', 'KK', 'Paspor'];
+    public const DOKUMEN_ANAK   = ['Akta Kelahiran', 'KK', 'Paspor'];
 
-    // Dokumen yang dibutuhkan per kategori usia
-    public static function dokumenDibutuhkan(string $kategori): array
+    public static function getDokumenByKategori(string $kategori): array
     {
-        return match($kategori) {
-            'dewasa' => ['ktp', 'kk', 'paspor'],
-            'anak'   => ['akta_lahir', 'kk', 'paspor'],
-            default  => [],
-        };
+        return $kategori === 'Anak-anak'
+            ? self::DOKUMEN_ANAK
+            : self::DOKUMEN_DEWASA;
     }
 
     public function jamaah()
     {
         return $this->belongsTo(Jamaah::class);
+    }
+
+    public function getUrlAttribute(): string
+    {
+        return Storage::url($this->file_path);
+    }
+
+    public function deleteFile(): void
+    {
+        Storage::disk('public')->delete($this->file_path);
     }
 }

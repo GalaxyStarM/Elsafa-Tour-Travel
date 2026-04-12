@@ -21,24 +21,33 @@ Route::middleware('admin.auth')->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // // Jamaah
-    // Route::resource('jamaah', JamaahController::class);
-    // Route::get('jamaah/{jamaah}/invoice', [JamaahController::class, 'invoice'])
-    //     ->name('jamaah.invoice');
+    Route::prefix('jamaah')->name('jamaah.')->group(function () {
+        Route::get('/',              [JamaahController::class, 'index'])->name('index');
+        Route::get('/create',        [JamaahController::class, 'create'])->name('create');
+        Route::post('/',             [JamaahController::class, 'store'])->name('store');
+        Route::get('/{jamaah}',      [JamaahController::class, 'show'])->name('show');
+        Route::get('/{jamaah}/edit', [JamaahController::class, 'edit'])->name('edit');
+        Route::put('/{jamaah}',      [JamaahController::class, 'update'])->name('update');
+        Route::delete('/{jamaah}',   [JamaahController::class, 'destroy'])->name('destroy');
+    
+        // Upload AJAX
+        Route::post('/{jamaah}/upload-dokumen', [JamaahController::class, 'uploadDokumen'])->name('upload-dokumen');
+        Route::post('/{jamaah}/upload-foto',    [JamaahController::class, 'uploadFoto'])->name('upload-foto');
 
-    // // Dokumen jamaah
-    // Route::post('jamaah/{jamaah}/dokumen',          [JamaahController::class, 'uploadDokumen'])
-    //     ->name('jamaah.dokumen.upload');
-    // Route::delete('jamaah/{jamaah}/dokumen/{jenis}', [JamaahController::class, 'hapusDokumen'])
-    //     ->name('jamaah.dokumen.hapus');
+        Route::delete('/{jamaah}/hapus-dokumen', [JamaahController::class, 'hapusDokumen'])->name('hapus-dokumen');
+        Route::delete('/{jamaah}/hapus-foto',    [JamaahController::class, 'hapusFoto'])->name('hapus-foto');
+    
+        // Invoice
+        Route::get('/{jamaah}/invoice', [JamaahController::class, 'invoice'])->name('invoice');
+    
+        // Pembayaran (nested)
+        Route::prefix('/{jamaah}/pembayaran')->name('pembayaran.')->group(function () {
+            Route::post('/',               [PembayaranController::class, 'store'])->name('store');
+            Route::put('/{pembayaran}',    [PembayaranController::class, 'update'])->name('update');
+            Route::delete('/{pembayaran}', [PembayaranController::class, 'destroy'])->name('destroy');
+        });
 
-    // // Pembayaran
-    // Route::post('jamaah/{jamaah}/pembayaran',    [PembayaranController::class, 'store'])
-    //     ->name('pembayaran.store');
-    // Route::put('pembayaran/{pembayaran}',        [PembayaranController::class, 'update'])
-    //     ->name('pembayaran.update');
-    // Route::delete('pembayaran/{pembayaran}',     [PembayaranController::class, 'destroy'])
-    //     ->name('pembayaran.destroy');
+    });
 
     // Data Mitra
     Route::get('/mitras',           [MitraController::class, 'index'])->name('mitras.index');
