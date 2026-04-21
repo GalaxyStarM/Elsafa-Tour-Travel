@@ -22,7 +22,7 @@ class PaketController extends Controller
             $query->where('jenis', $request->filter);
         }
 
-        $pakets = $query->orderBy('tanggal_keberangkatan')->paginate(15)->withQueryString();
+        $pakets = $query->orderBy('nama', 'asc')->paginate(15)->withQueryString();
         $total  = Paket::count();
 
         return view('paket.index', compact('pakets', 'total'));

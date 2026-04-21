@@ -14,7 +14,7 @@
             <button class="filter-toggle-btn" id="filterToggle" type="button">
                 <span style="color:#adb5bd;font-size:12px;font-weight:500">Filter</span>
                 <span id="filterLabel" style="font-size:13px;color:#495057">
-                    @if(request()->anyFilled(['paket_id','jenis_jamaah','status_jamaah','status_pembayaran']))
+                    @if(request()->anyFilled(['paket_id','jenis_jamaah','status_jamaah','status_pembayaran','perhatian']))
                         Filter aktif
                     @else
                         Pilih filter...
@@ -38,7 +38,7 @@
                         @foreach($paket as $p)
                         <label class="filter-popup-label">
                             <input type="radio" name="paket_id" value="{{ $p->id }}" {{ request('paket_id') == $p->id ? 'checked' : '' }}>
-                            {{ $p->nama_paket }}
+                            {{ $p->nama }}
                         </label>
                         @endforeach
                     </div>
@@ -85,7 +85,7 @@
 
         {{-- SEARCH --}}
         <form method="GET" action="{{ route('jamaah.index') }}" class="search-wrap" id="searchForm">
-            @foreach(['paket_id','jenis_jamaah','status_jamaah','status_pembayaran'] as $fk)
+            @foreach(['paket_id','jenis_jamaah','status_jamaah','status_pembayaran','perhatian'] as $fk)
                 @if(request($fk))
                     <input type="hidden" name="{{ $fk }}" value="{{ request($fk) }}">
                 @endif
@@ -99,6 +99,27 @@
             <i class="bi bi-plus-lg"></i> Tambah Jamaah
         </a>
     </div>
+
+    {{-- BANNER FILTER PERHATIAN AKTIF --}}
+    @if(request('perhatian'))
+    @php
+        $perhatianLabel = match(request('perhatian')) {
+            'dokumen_tidak_lengkap' => ['label' => 'Dokumen tidak lengkap', 'icon' => 'bi-file-earmark-x', 'color' => '#856404', 'bg' => '#fff8e1', 'border' => '#f6d860'],
+            'belum_ada_pembayaran'  => ['label' => 'Belum ada pembayaran', 'icon' => 'bi-cash-stack', 'color' => '#842029', 'bg' => '#fff0f0', 'border' => '#f5c2c7'],
+            'cicilan_30_hari'       => ['label' => 'Cicilan terakhir >30 hari', 'icon' => 'bi-clock-history', 'color' => '#856404', 'bg' => '#fff8e1', 'border' => '#f6d860'],
+            default                 => null,
+        };
+    @endphp
+    @if($perhatianLabel)
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 16px;background:{{ $perhatianLabel['bg'] }};border:1.5px solid {{ $perhatianLabel['border'] }};border-radius:8px;font-size:13px;color:{{ $perhatianLabel['color'] }};font-weight:600">
+        <i class="bi {{ $perhatianLabel['icon'] }}"></i>
+        <span>Menampilkan jamaah: {{ $perhatianLabel['label'] }}</span>
+        <a href="{{ route('jamaah.index') }}" style="margin-left:auto;color:{{ $perhatianLabel['color'] }};text-decoration:none;font-size:12px;opacity:.7">
+            <i class="bi bi-x-lg"></i> Hapus filter
+        </a>
+    </div>
+    @endif
+    @endif
 
     {{-- TOTAL --}}
     <div class="text-end" style="font-size:13px;color:#6c757d;font-weight:600">
@@ -275,19 +296,32 @@
 
 @push('scripts')
 <script>
+// Toggle dropdown saat klik tombol filter
 document.getElementById('filterToggle').addEventListener('click', function(e) {
     e.stopPropagation();
     document.getElementById('filterDropdown').classList.toggle('show');
 });
+
+// Cegah dropdown tertutup saat klik di dalam area filter popup
+document.getElementById('filterDropdown').addEventListener('click', function(e) {
+    e.stopPropagation();
+});
+
+// Tutup dropdown hanya saat klik di luar area filter (tombol & popup)
 document.addEventListener('click', function(e) {
-    const dd = document.getElementById('filterDropdown');
-    if (!document.getElementById('filterToggle').contains(e.target)) {
-        dd.classList.remove('show');
+    const toggle = document.getElementById('filterToggle');
+    const dropdown = document.getElementById('filterDropdown');
+    if (!toggle.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.classList.remove('show');
     }
 });
+
+// Search on Enter
 document.querySelector('.search-input')?.addEventListener('keypress', function(e) {
     if (e.key === 'Enter') this.closest('form').submit();
 });
+
+// Delete confirmation modal
 function confirmDelete(id, nama) {
     document.getElementById('deleteMessage').textContent =
         'Apakah anda yakin ingin menghapus jamaah "' + nama + '"?';

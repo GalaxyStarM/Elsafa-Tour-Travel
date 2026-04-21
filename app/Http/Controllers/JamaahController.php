@@ -32,7 +32,17 @@ class JamaahController extends Controller
             $query->where('status_jamaah', $request->status_jamaah);
         }
 
-        $jamaah = $query->latest()->paginate(15)->withQueryString();
+        // Filter dari dashboard "Perlu Perhatian"
+        if ($request->filled('perhatian')) {
+            match ($request->perhatian) {
+                'dokumen_tidak_lengkap' => $query->whereHas('paket'), // akan difilter post-query
+                'belum_ada_pembayaran'  => $query->doesntHave('pembayaran'),
+                'cicilan_30_hari'       => $query->whereHas('pembayaran'),
+                default                 => null,
+            };
+        }
+
+        $jamaah = $query->orderBy('nama_lengkap', 'asc')->paginate(15)->withQueryString();
 
         // Post-filter status pembayaran
         if ($request->filled('status_pembayaran')) {
@@ -40,6 +50,20 @@ class JamaahController extends Controller
             $filtered = $jamaah->getCollection()->filter(
                 fn($j) => $j->status_pembayaran === $statusFilter
             );
+            $jamaah->setCollection($filtered);
+        }
+
+        // Post-filter perhatian (butuh relasi yang sudah di-load)
+        if ($request->filled('perhatian')) {
+            $filtered = match ($request->perhatian) {
+                'dokumen_tidak_lengkap' => $jamaah->getCollection()->filter(fn($j) => !$j->dokumen_lengkap),
+                'cicilan_30_hari'       => $jamaah->getCollection()->filter(fn($j) =>
+                    $j->status_pembayaran !== 'Lunas' &&
+                    $j->pembayaran->isNotEmpty() &&
+                    $j->pembayaran->max('tanggal_bayar') < now()->subDays(30)->toDateString()
+                ),
+                default => $jamaah->getCollection(),
+            };
             $jamaah->setCollection($filtered);
         }
 

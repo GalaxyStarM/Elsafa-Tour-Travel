@@ -92,11 +92,11 @@
                             {{ ($pakets->currentPage()-1) * $pakets->perPage() + $i + 1 }}.
                         </td>
                         <td class="fw-600">{{ $p->nama }}</td>
-                        <td style="font-size:13px">{{ $p->jenis }}</td>
+                        <td style="font-size:13px">{{ ucfirst($p->jenis) }}</td>
                         <td style="font-size:13px">Rp {{ number_format($p->harga, 0, ',', '.') }}</td>
                         <td class="text-center">
                             <span class="bdg {{ $p->status === 'aktif' ? 'bdg-aktif' : 'bdg-nonaktif' }}">
-                                {{ $p->status }}
+                                {{ ucfirst($p->status) }}
                             </span>
                         </td>
                         <td style="font-size:13px">
@@ -339,8 +339,15 @@ document.getElementById('filterToggle').addEventListener('click', function(e) {
     e.stopPropagation();
     document.getElementById('filterDropdown').classList.toggle('show');
 });
-document.addEventListener('click', function() {
-    document.getElementById('filterDropdown').classList.remove('show');
+document.getElementById('filterDropdown').addEventListener('click', function(e) {
+    e.stopPropagation();
+});
+document.addEventListener('click', function(e) {
+    const toggle = document.getElementById('filterToggle');
+    const dropdown = document.getElementById('filterDropdown');
+    if (!toggle.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.classList.remove('show');
+    }
 });
 
 function openTambah() {

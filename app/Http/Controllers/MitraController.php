@@ -25,7 +25,7 @@ class MitraController extends Controller
             $query->where('status', $request->filter);
         }
 
-        $mitras = $query->orderBy('nama')->paginate(15)->withQueryString();
+        $mitras = $query->orderBy('nama', 'asc')->paginate(15)->withQueryString();
         $total  = Mitra::count();
 
         return view('mitra.index', compact('mitras', 'total'));
@@ -62,7 +62,7 @@ class MitraController extends Controller
         $mitra->loadCount('jamaah');
         $jamaah = $mitra->jamaah()
             ->with(['paket'])
-            ->orderBy('nama')
+            ->orderBy('nama_lengkap', 'asc')
             ->paginate(15);
 
         return view('mitra.show', compact('mitra', 'jamaah'));

@@ -83,7 +83,7 @@
                         <td class="text-center">{{ $m->jamaah_count ?? $m->jamaah()->count() }}</td>
                         <td class="text-center">
                             <span class="bdg {{ $m->status === 'aktif' ? 'bdg-aktif' : 'bdg-nonaktif' }}">
-                                {{ $m->status }}
+                                {{ ucfirst($m->status) }}
                             </span>
                         </td>
                         <td>
@@ -298,10 +298,14 @@ document.getElementById('filterToggle').addEventListener('click', function(e) {
     e.stopPropagation();
     document.getElementById('filterDropdown').classList.toggle('show');
 });
+document.getElementById('filterDropdown').addEventListener('click', function(e) {
+    e.stopPropagation();
+});
 document.addEventListener('click', function(e) {
-    const dd = document.getElementById('filterDropdown');
-    if (!document.getElementById('filterToggle').contains(e.target)) {
-        dd.classList.remove('show');
+    const toggle = document.getElementById('filterToggle');
+    const dropdown = document.getElementById('filterDropdown');
+    if (!toggle.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.classList.remove('show');
     }
 });
 

@@ -107,7 +107,7 @@
                 <a href="{{ route('dashboard') }}"
                    class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
                     <i class="bi bi-grid-1x2-fill"></i>
-                    Dashboard
+                    Beranda
                 </a>
             </li>
             <li class="nav-item">

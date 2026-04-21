@@ -97,7 +97,7 @@
 
                 <div class="d-flex flex-column gap-2">
 
-                    <a href="{{ route('jamaah.index') }}"
+                    <a href="{{ route('jamaah.index', ['perhatian' => 'dokumen_tidak_lengkap']) }}"
                        class="alert-item {{ $dokumenTidakLengkap > 0 ? 'warning' : 'ok' }}">
                         <i class="bi bi-file-earmark-x"></i>
                         <span class="flex-grow-1">Dokumen tidak lengkap</span>
@@ -106,7 +106,7 @@
                         </span>
                     </a>
 
-                    <a href="{{ route('jamaah.index', ['status_pembayaran' => 'Belum Lunas']) }}"
+                    <a href="{{ route('jamaah.index', ['perhatian' => 'belum_ada_pembayaran']) }}"
                        class="alert-item {{ $belumAdaPembayaran > 0 ? 'danger' : 'ok' }}">
                         <i class="bi bi-cash-stack"></i>
                         <span class="flex-grow-1">Belum ada pembayaran</span>
@@ -115,7 +115,7 @@
                         </span>
                     </a>
 
-                    <a href="{{ route('jamaah.index') }}"
+                    <a href="{{ route('jamaah.index', ['perhatian' => 'cicilan_30_hari']) }}"
                        class="alert-item {{ $cicilan30Hari > 0 ? 'warning' : 'ok' }}">
                         <i class="bi bi-clock-history"></i>
                         <span class="flex-grow-1">Cicilan terakhir &gt;30 hari</span>
@@ -155,10 +155,10 @@
                         <td class="text-center" style="color:#adb5bd;font-weight:600">{{ $i + 1 }}.</td>
                         <td class="fw-600">
                             <a href="{{ route('paket.index') }}" class="text-navy" style="text-decoration:none">
-                                {{ $paket->nama_paket }}
+                                {{ $paket->nama }}
                             </a>
                         </td>
-                        <td>{{ $paket->jenis }}</td>
+                        <td>{{ ucfirst($paket->jenis) }}</td>
                         <td>
                             {{ $paket->tanggal_keberangkatan
                                 ? \Carbon\Carbon::parse($paket->tanggal_keberangkatan)->locale('id')->isoFormat('D MMMM YYYY')

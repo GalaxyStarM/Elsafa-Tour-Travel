@@ -61,5 +61,4 @@ Route::middleware('admin.auth')->group(function () {
         Route::post('/paket',          [PaketController::class, 'store'])->name('paket.store');
         Route::put('/paket/{paket}',   [PaketController::class, 'update'])->name('paket.update');
         Route::delete('/paket/{paket}',[PaketController::class, 'destroy'])->name('paket.destroy');
-
 });
