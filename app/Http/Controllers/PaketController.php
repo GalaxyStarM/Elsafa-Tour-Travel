@@ -25,7 +25,7 @@ class PaketController extends Controller
         $pakets = $query->orderBy('tanggal_keberangkatan')->paginate(15)->withQueryString();
         $total  = Paket::count();
 
-        return view('pakets.index', compact('pakets', 'total'));
+        return view('paket.index', compact('pakets', 'total'));
     }
 
     public function store(Request $request)
@@ -51,7 +51,7 @@ class PaketController extends Controller
 
         Paket::create($validated);
 
-        return redirect()->route('pakets.index')
+        return redirect()->route('paket.index')
             ->with('success', 'Paket berhasil ditambahkan.');
     }
 
@@ -76,20 +76,20 @@ class PaketController extends Controller
 
         $paket->update($validated);
 
-        return redirect()->route('pakets.index')
+        return redirect()->route('paket.index')
             ->with('success', 'Data paket berhasil diperbarui.');
     }
 
     public function destroy(Paket $paket)
     {
         if ($paket->jamaah()->exists()) {
-            return redirect()->route('pakets.index')
+            return redirect()->route('paket.index')
                 ->with('error', 'Paket tidak dapat dihapus karena masih memiliki jamaah terdaftar.');
         }
 
         $paket->delete();
 
-        return redirect()->route('pakets.index')
+        return redirect()->route('paket.index')
             ->with('success', 'Paket berhasil dihapus.');
     }
 }

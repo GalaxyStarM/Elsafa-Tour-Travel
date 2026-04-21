@@ -21,8 +21,13 @@
             width: 100%; max-width: 420px;
             box-shadow: 0 4px 30px rgba(0,0,0,0.08);
         }
-        .brand-name { font-size: 32px; font-weight: 800; color: #C9A44A; letter-spacing: 2px; }
-        .brand-sub  { font-size: 11px; color: #1a2b4a; text-transform: uppercase; letter-spacing: 1px; }
+        .login-logo {
+            width: 250px;
+            height: 250px;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto 16px;
+        }
         .input-group-text { background: #f8f9fa; border-right: 0; color: #adb5bd; }
         .form-control { border-left: 0; }
         .form-control:focus { box-shadow: none; border-color: #ced4da; }
@@ -37,12 +42,9 @@
 <body>
 <div class="login-card">
     <div class="text-center mb-4">
-        <div style="width:70px;height:70px;background:#1a2b4a;border-radius:14px;
-                    margin:0 auto 12px;display:flex;align-items:center;justify-content:center;">
-            <span style="color:#C9A44A;font-size:30px;font-weight:800;">E</span>
-        </div>
-        <div class="brand-name">ELSAFA</div>
-        <div class="brand-sub">PT. Elsafa Tour dan Travel</div>
+        <img src="{{ asset('images/elsafalogo.jpeg') }}"
+             alt="Elsafa Logo"
+             class="login-logo">
     </div>
 
     <p class="text-center fw-700 mb-1" style="font-size:20px;color:#1a2b4a;">Silahkan Login</p>

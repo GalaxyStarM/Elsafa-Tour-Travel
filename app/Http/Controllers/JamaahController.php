@@ -43,18 +43,18 @@ class JamaahController extends Controller
             $jamaah->setCollection($filtered);
         }
 
-        $pakets = Paket::orderBy('nama_paket')->get();
-        $mitras = Mitra::where('status', 'Aktif')->orderBy('nama_mitra')->get();
+        $paket = Paket::orderBy('nama')->get();
+        $mitra = Mitra::where('status', 'Aktif')->orderBy('nama')->get();
         $total  = Jamaah::count();
 
-        return view('jamaah.index', compact('jamaah', 'pakets', 'mitras', 'total'));
+        return view('jamaah.index', compact('jamaah', 'paket', 'mitra', 'total'));
     }
 
     public function create()
     {
-        $pakets = Paket::where('status', 'Aktif')->orderBy('nama_paket')->get();
-        $mitras = Mitra::where('status', 'Aktif')->orderBy('nama_mitra')->get();
-        return view('jamaah.create', compact('pakets', 'mitras'));
+        $paket = Paket::where('status', 'Aktif')->orderBy('nama')->get();
+        $mitra = Mitra::where('status', 'Aktif')->orderBy('nama')->get();
+        return view('jamaah.create', compact('paket', 'mitra'));
     }
 
     public function store(Request $request)
@@ -122,8 +122,8 @@ class JamaahController extends Controller
 
     public function edit(Jamaah $jamaah)
     {
-        $pakets = Paket::where('status', 'Aktif')->orderBy('nama_paket')->get();
-        $mitras = Mitra::where('status', 'Aktif')->orderBy('nama_mitra')->get();
+        $pakets = Paket::where('status', 'Aktif')->orderBy('nama')->get();
+        $mitras = Mitra::where('status', 'Aktif')->orderBy('nama')->get();
         $dokumenMap = $jamaah->dokumen->keyBy('jenis_dokumen');
         return view('jamaah.edit', compact('jamaah', 'pakets', 'mitras', 'dokumenMap'));
     }

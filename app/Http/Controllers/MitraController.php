@@ -28,7 +28,7 @@ class MitraController extends Controller
         $mitras = $query->orderBy('nama')->paginate(15)->withQueryString();
         $total  = Mitra::count();
 
-        return view('mitras.index', compact('mitras', 'total'));
+        return view('mitra.index', compact('mitras', 'total'));
     }
 
     public function store(Request $request)
@@ -53,7 +53,7 @@ class MitraController extends Controller
 
         Mitra::create($validated);
 
-        return redirect()->route('mitras.index')
+        return redirect()->route('mitra.index')
             ->with('success', 'Mitra berhasil ditambahkan.');
     }
 
@@ -65,7 +65,7 @@ class MitraController extends Controller
             ->orderBy('nama')
             ->paginate(15);
 
-        return view('mitras.show', compact('mitra', 'jamaah'));
+        return view('mitra.show', compact('mitra', 'jamaah'));
     }
 
     public function update(Request $request, Mitra $mitra)
@@ -90,7 +90,7 @@ class MitraController extends Controller
 
         $mitra->update($validated);
 
-        return redirect()->route('mitras.index')
+        return redirect()->route('mitra.index')
             ->with('success', 'Data mitra berhasil diperbarui.');
     }
 
@@ -98,13 +98,13 @@ class MitraController extends Controller
     {
         // Check if mitra has jamaah
         if ($mitra->jamaah()->exists()) {
-            return redirect()->route('mitras.index')
+            return redirect()->route('mitra.index')
                 ->with('error', 'Mitra tidak dapat dihapus karena masih memiliki jamaah terdaftar.');
         }
 
         $mitra->delete();
 
-        return redirect()->route('mitras.index')
+        return redirect()->route('mitra.index')
             ->with('success', 'Mitra berhasil dihapus.');
     }
 }

@@ -50,15 +50,16 @@ Route::middleware('admin.auth')->group(function () {
     });
 
     // Data Mitra
-    Route::get('/mitras',           [MitraController::class, 'index'])->name('mitras.index');
-    Route::post('/mitras',          [MitraController::class, 'store'])->name('mitras.store');
-    Route::get('/mitras/{mitra}',   [MitraController::class, 'show'])->name('mitras.show');
-    Route::put('/mitras/{mitra}',   [MitraController::class, 'update'])->name('mitras.update');
-    Route::delete('/mitras/{mitra}',[MitraController::class, 'destroy'])->name('mitras.destroy');
+        Route::get('/mitra',           [MitraController::class, 'index'])->name('mitra.index');
+        Route::post('/mitra',          [MitraController::class, 'store'])->name('mitra.store');
+        Route::get('/mitra/{mitra}',   [MitraController::class, 'show'])->name('mitra.show');
+        Route::put('/mitras/{mitra}',   [MitraController::class, 'update'])->name('mitra.update');
+        Route::delete('/mitras/{mitra}',[MitraController::class, 'destroy'])->name('mitra.destroy');
 
-    // Paket
-    Route::get('/pakets',           [PaketController::class, 'index'])->name('pakets.index');
-    Route::post('/pakets',          [PaketController::class, 'store'])->name('pakets.store');
-    Route::put('/pakets/{paket}',   [PaketController::class, 'update'])->name('pakets.update');
-    Route::delete('/pakets/{paket}',[PaketController::class, 'destroy'])->name('pakets.destroy');
+        // Paket
+        Route::get('/paket',           [PaketController::class, 'index'])->name('paket.index');
+        Route::post('/paket',          [PaketController::class, 'store'])->name('paket.store');
+        Route::put('/paket/{paket}',   [PaketController::class, 'update'])->name('paket.update');
+        Route::delete('/paket/{paket}',[PaketController::class, 'destroy'])->name('paket.destroy');
+
 });

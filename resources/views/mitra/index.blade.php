@@ -1,139 +1,111 @@
+{{-- resources/views/mitra/index.blade.php --}}
 @extends('layouts.app')
 
-@section('title', 'Data Mitra')
+@section('page-title', 'Data Mitra')
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h4 class="fw-bold mb-0">Data Mitra</h4>
-    <div class="d-flex align-items-center gap-2">
-        <span class="text-muted small">Admin</span>
-        <i class="bi bi-person-circle fs-4 text-secondary"></i>
-    </div>
-</div>
+<div class="d-flex flex-column gap-3">
 
-{{-- Alert --}}
-@if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <i class="bi bi-check-circle me-2"></i>{{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-@endif
-@if(session('error'))
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <i class="bi bi-exclamation-circle me-2"></i>{{ session('error') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-@endif
+    {{-- FILTER BAR --}}
+    <div class="filter-bar">
 
-{{-- Filter & Search Bar --}}
-<div class="card border-0 shadow-sm mb-3" style="background:#f5ede0;">
-    <div class="card-body py-3">
-        <form method="GET" action="{{ route('mitras.index') }}" class="d-flex gap-2 align-items-center">
-            {{-- Filter Dropdown --}}
-            <div class="dropdown">
-                <button class="btn btn-light border dropdown-toggle d-flex align-items-center gap-2"
-                        type="button" data-bs-toggle="dropdown" style="min-width:180px;">
-                    <span class="text-muted small fw-semibold">Filter</span>
-                    <span>{{ request('filter') && request('filter') !== 'semua' ? ucfirst(request('filter')) : 'Pilih filter...' }}</span>
-                </button>
-                <ul class="dropdown-menu shadow-sm">
-                    <li>
-                        <a class="dropdown-item {{ !request('filter') || request('filter') === 'semua' ? 'active' : '' }}"
-                           href="{{ route('mitras.index', array_merge(request()->except('filter','page'), ['filter'=>'semua'])) }}">
-                            Semua Status
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item {{ request('filter') === 'aktif' ? 'active' : '' }}"
-                           href="{{ route('mitras.index', array_merge(request()->except('filter','page'), ['filter'=>'aktif'])) }}">
-                            Aktif
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item {{ request('filter') === 'nonaktif' ? 'active' : '' }}"
-                           href="{{ route('mitras.index', array_merge(request()->except('filter','page'), ['filter'=>'nonaktif'])) }}">
-                            Non-Aktif
-                        </a>
-                    </li>
-                </ul>
-            </div>
-
-            {{-- Search --}}
-            <div class="input-group flex-grow-1">
-                <input type="text" name="search" class="form-control border"
-                       placeholder="Search..." value="{{ request('search') }}">
-                <button class="btn btn-light border" type="submit">
-                    <i class="bi bi-search"></i>
-                </button>
-            </div>
-
-            {{-- Tambah Mitra --}}
-            <button type="button" class="btn btn-dark px-4 fw-semibold"
-                    data-bs-toggle="modal" data-bs-target="#modalTambahMitra">
-                <i class="bi bi-plus-lg me-1"></i> Tambah Mitra
+        {{-- Filter dropdown --}}
+        <div class="position-relative">
+            <button class="filter-toggle-btn" id="filterToggle" type="button">
+                <span style="color:#adb5bd;font-size:12px;font-weight:500">Filter</span>
+                <span id="filterLabel" style="font-size:13px;color:#495057">Pilih filter...</span>
+                <i class="bi bi-chevron-down" style="font-size:11px;color:#adb5bd;margin-left:auto"></i>
             </button>
-        </form>
-    </div>
-</div>
 
-{{-- Table --}}
-<div class="card border-0 shadow-sm">
-    <div class="card-body p-0">
-        <div class="d-flex justify-content-end px-3 py-2 border-bottom">
-            <small class="text-muted">Total : <strong>{{ $total }} Mitra</strong></small>
+            <div id="filterDropdown" class="filter-popup">
+                <form method="GET" action="{{ route('mitra.index') }}">
+                    @if(request('search'))
+                        <input type="hidden" name="search" value="{{ request('search') }}">
+                    @endif
+                    <p class="filter-popup-title">Status</p>
+                    <label class="filter-popup-label">
+                        <input type="radio" name="status" value="" {{ !request('status') ? 'checked' : '' }}> Semua
+                    </label>
+                    <label class="filter-popup-label">
+                        <input type="radio" name="status" value="aktif" {{ request('status') === 'aktif' ? 'checked' : '' }}> Aktif
+                    </label>
+                    <label class="filter-popup-label">
+                        <input type="radio" name="status" value="nonaktif" {{ request('status') === 'nonaktif' ? 'checked' : '' }}> Nonaktif
+                    </label>
+                    <button type="submit" class="btn-elsafa w-100 mt-2 justify-content-center">Terapkan</button>
+                </form>
+            </div>
         </div>
 
+        {{-- Search --}}
+        <form method="GET" action="{{ route('mitra.index') }}" class="search-wrap">
+            @if(request('status'))
+                <input type="hidden" name="status" value="{{ request('status') }}">
+            @endif
+            <i class="bi bi-search"></i>
+            <input type="text" class="search-input" name="search"
+                   placeholder="Search..." value="{{ request('search') }}" autocomplete="off">
+        </form>
+
+        {{-- Tambah --}}
+        <button type="button" class="btn-elsafa ms-auto" onclick="openTambah()">
+            <i class="bi bi-plus-lg"></i> Tambah Mitra
+        </button>
+    </div>
+
+    {{-- Total --}}
+    <div class="text-end" style="font-size:13px;color:#6c757d;font-weight:600">
+        Total : {{ $mitras->total() }} Mitra
+    </div>
+
+    {{-- TABLE --}}
+    <div class="card-elsafa">
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead style="background:#1e2d40; color:#fff;">
+            <table class="table-elsafa">
+                <thead>
                     <tr>
-                        <th class="ps-3" width="60">NO.</th>
+                        <th style="width:55px">NO.</th>
                         <th>Nama Mitra</th>
                         <th>Kontak</th>
-                        <th>Jumlah Jamaah</th>
-                        <th>Status</th>
-                        <th class="text-center" width="130">Aksi</th>
+                        <th class="text-center">Jumlah Jamaah</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-center" style="width:110px">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($mitras as $i => $mitra)
+                    @forelse($mitras as $i => $m)
                     <tr>
-                        <td class="ps-3 text-muted">{{ $mitras->firstItem() + $i }}.</td>
-                        <td class="fw-medium">{{ $mitra->nama }}</td>
-                        <td>{{ $mitra->kontak ?? '-' }}</td>
-                        <td>{{ $mitra->jamaah_count }}</td>
-                        <td>
-                            <span class="badge {{ $mitra->status === 'aktif' ? 'bg-success' : 'bg-secondary' }}">
-                                {{ ucfirst($mitra->status) }}
+                        <td class="text-center" style="color:#adb5bd;font-weight:600">
+                            {{ ($mitras->currentPage()-1) * $mitras->perPage() + $i + 1 }}.
+                        </td>
+                        <td class="fw-600">{{ $m->nama }}</td>
+                        <td style="font-size:13px">{{ $m->kontak ?? '-' }}</td>
+                        <td class="text-center">{{ $m->jamaah_count ?? $m->jamaah()->count() }}</td>
+                        <td class="text-center">
+                            <span class="bdg {{ $m->status === 'aktif' ? 'bdg-aktif' : 'bdg-nonaktif' }}">
+                                {{ $m->status }}
                             </span>
                         </td>
-                        <td class="text-center">
-                            {{-- Detail --}}
-                            <a href="{{ route('mitras.show', $mitra) }}"
-                               class="btn btn-sm btn-primary me-1" title="Detail">
-                                <i class="bi bi-exclamation-lg"></i>
-                            </a>
-                            {{-- Edit --}}
-                            <button class="btn btn-sm btn-success me-1 btn-edit-mitra"
-                                    title="Edit"
-                                    data-id="{{ $mitra->id }}" 
-                                    data-nama="{{ $mitra->nama }}"
-                                    data-kontak="{{ $mitra->kontak }}"
-                                    data-status="{{ $mitra->status }}">
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                            {{-- Hapus --}}
-                            <button class="btn btn-sm btn-danger btn-hapus-mitra"
-                                    title="Hapus"
-                                    data-id="{{ $mitra->id }}">
-                                <i class="bi bi-trash"></i>
-                            </button>
+                        <td>
+                            <div class="d-flex gap-1 justify-content-center">
+                                <a href="{{ route('mitra.show', $m) }}" class="btn-act btn-detail" title="Detail">
+                                    <i class="bi bi-exclamation-lg"></i>
+                                </a>
+                                <button class="btn-act btn-edit" title="Edit"
+                                        onclick="openEdit({{ $m->id }}, '{{ addslashes($m->nama) }}', '{{ $m->kontak }}', '{{ $m->status }}')">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn-act btn-del" title="Hapus"
+                                        onclick="confirmHapus({{ $m->id }}, '{{ addslashes($m->nama) }}')">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" class="text-center py-4 text-muted">
-                            <i class="bi bi-inbox fs-4 d-block mb-2"></i>
+                        <td colspan="6" class="text-center py-4" style="color:#adb5bd">
+                            <i class="bi bi-inbox d-block mb-2" style="font-size:1.8rem"></i>
                             Belum ada data mitra.
                         </td>
                     </tr>
@@ -143,215 +115,213 @@
         </div>
 
         {{-- Pagination --}}
-        @if($mitras->hasPages())
-        <div class="d-flex justify-content-between align-items-center px-3 py-3 border-top">
-            <small class="text-muted">
-                Menampilkan {{ $mitras->firstItem() }} - {{ $mitras->lastItem() }} entri dari {{ $mitras->total() }} entri
-            </small>
-            <nav>
-                <ul class="pagination pagination-sm mb-0">
-                    <li class="page-item {{ $mitras->onFirstPage() ? 'disabled' : '' }}">
-                        <a class="page-link" href="{{ $mitras->previousPageUrl() }}">
-                            <i class="bi bi-chevron-left"></i>
-                        </a>
-                    </li>
-                    @foreach($mitras->getUrlRange(1, $mitras->lastPage()) as $page => $url)
-                    <li class="page-item {{ $page == $mitras->currentPage() ? 'active' : '' }}">
-                        <a class="page-link" href="{{ $url }}">{{ $page }}</a>
-                    </li>
-                    @endforeach
-                    <li class="page-item {{ !$mitras->hasMorePages() ? 'disabled' : '' }}">
-                        <a class="page-link" href="{{ $mitras->nextPageUrl() }}">
-                            <i class="bi bi-chevron-right"></i>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
+        <div class="d-flex align-items-center justify-content-between px-4 py-3"
+             style="border-top:1px solid #f0f0f0">
+            <span style="font-size:13px;color:#6c757d">
+                Menampilkan {{ $mitras->firstItem() ?? 0 }} entri dari {{ $mitras->total() }} entri
+            </span>
+            <div class="d-flex gap-1">
+                @if($mitras->onFirstPage())
+                    <span class="page-btn disabled"><i class="bi bi-chevron-left"></i></span>
+                @else
+                    <a href="{{ $mitras->previousPageUrl() }}" class="page-btn"><i class="bi bi-chevron-left"></i></a>
+                @endif
+                @foreach($mitras->getUrlRange(1, $mitras->lastPage()) as $page => $url)
+                    <a href="{{ $url }}" class="page-btn {{ $page == $mitras->currentPage() ? 'active' : '' }}">{{ $page }}</a>
+                @endforeach
+                @if($mitras->hasMorePages())
+                    <a href="{{ $mitras->nextPageUrl() }}" class="page-btn"><i class="bi bi-chevron-right"></i></a>
+                @else
+                    <span class="page-btn disabled"><i class="bi bi-chevron-right"></i></span>
+                @endif
+            </div>
         </div>
-        @else
-        <div class="px-3 py-2 border-top">
-            <small class="text-muted">Menampilkan {{ $mitras->count() }} entri dari {{ $total }} entri</small>
-        </div>
-        @endif
     </div>
 </div>
 
-{{-- ============ MODAL TAMBAH MITRA ============ --}}
-<div class="modal fade" id="modalTambahMitra" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header border-0" style="background:#f5ede0;">
-                <h5 class="modal-title fw-bold">Tambah Mitra</h5>
+{{-- ═══ MODAL TAMBAH MITRA ═══ --}}
+<div class="modal fade" id="modalTambah" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered" style="max-width:500px">
+        <div class="modal-content border-0 rounded-4 overflow-hidden">
+            <div class="modal-header" style="padding:18px 24px">
+                <h5 class="modal-title">Tambah Mitra</h5>
             </div>
-            <form method="POST" action="{{ route('mitras.store') }}" id="formTambahMitra">
+            <form method="POST" action="{{ route('mitra.store') }}">
                 @csrf
-                <div class="modal-body">
-                    {{-- Nama Mitra --}}
+                <div class="modal-body p-4">
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">
-                            Nama Mitra <span class="text-danger">*</span>
-                        </label>
-                        <input type="text" name="nama" class="form-control @error('nama') is-invalid @enderror"
+                        <label class="form-label">Nama Mitra <span class="text-danger">*</span></label>
+                        <input type="text" name="nama" class="form-control" required
                                value="{{ old('nama') }}">
-                        @error('nama')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
                     </div>
-
-                    {{-- Kontak --}}
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Kontak</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-white">
-                                <img src="https://flagcdn.com/16x12/id.png" alt="ID" class="me-1"> +62
-                            </span>
-                            <input type="text" name="kontak" id="kontakInput"
-                                   class="form-control @error('kontak') is-invalid @enderror"
-                                   placeholder="8xx-xxxx-xxxx"
-                                   value="{{ old('kontak') }}">
+                        <label class="form-label">Kontak</label>
+                        <div class="phone-wrap">
+                            <div class="phone-prefix">🇮🇩 +62</div>
+                            <input type="text" name="kontak" class="phone-input"
+                                   placeholder="8xxxxxxxxxx" value="{{ old('kontak') }}">
                         </div>
-                        @error('kontak')
-                            <div class="text-danger small mt-1">{{ $message }}</div>
-                        @enderror
                     </div>
-
-                    {{-- Status --}}
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">
-                            Status <span class="text-danger">*</span>
-                        </label>
-                        <select name="status" class="form-select @error('status') is-invalid @enderror">
-                            <option value="aktif" {{ old('status') === 'aktif' ? 'selected' : '' }}>Aktif</option>
-                            <option value="nonaktif" {{ old('status') === 'nonaktif' ? 'selected' : '' }}>Non-Aktif</option>
+                    <div class="mb-1">
+                        <label class="form-label">Status <span class="text-danger">*</span></label>
+                        <select name="status" class="form-select" required>
+                            <option value="aktif" selected>Aktif</option>
+                            <option value="nonaktif">Nonaktif</option>
                         </select>
-                        @error('status')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
                     </div>
                 </div>
-                <div class="modal-footer border-0">
-                    <button type="submit" class="btn btn-dark px-4 fw-semibold">Simpan</button>
-                    <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">Batal</button>
+                <div class="modal-footer" style="padding:16px 24px;gap:10px">
+                    <button type="submit" class="btn-elsafa px-4">Simpan</button>
+                    <button type="button" class="btn btn-outline-secondary fw-600"
+                            style="border-radius:8px" data-bs-dismiss="modal">Batal</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
-{{-- ============ MODAL EDIT MITRA ============ --}}
-<div class="modal fade" id="modalEditMitra" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header border-0" style="background:#f5ede0;">
-                <h5 class="modal-title fw-bold">Edit Mitra</h5>
+{{-- ═══ MODAL EDIT MITRA ═══ --}}
+<div class="modal fade" id="modalEdit" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered" style="max-width:500px">
+        <div class="modal-content border-0 rounded-4 overflow-hidden">
+            <div class="modal-header" style="padding:18px 24px">
+                <h5 class="modal-title">Edit Mitra</h5>
             </div>
-            <form method="POST" id="formEditMitra">
-                @csrf
-                @method('PUT')
-                <div class="modal-body">
+            <form method="POST" id="editForm">
+                @csrf @method('PUT')
+                <div class="modal-body p-4">
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Nama Mitra <span class="text-danger">*</span></label>
+                        <label class="form-label">Nama Mitra <span class="text-danger">*</span></label>
                         <input type="text" name="nama" id="editNama" class="form-control" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Kontak</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-white">
-                                <img src="https://flagcdn.com/16x12/id.png" alt="ID" class="me-1"> +62
-                            </span>
-                            <input type="text" name="kontak" id="editKontak" class="form-control" placeholder="8xx-xxxx-xxxx">
+                        <label class="form-label">Kontak</label>
+                        <div class="phone-wrap">
+                            <div class="phone-prefix">🇮🇩 +62</div>
+                            <input type="text" name="kontak" id="editKontak" class="phone-input">
                         </div>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Status <span class="text-danger">*</span></label>
-                        <select name="status" id="editStatus" class="form-select">
+                    <div class="mb-1">
+                        <label class="form-label">Status <span class="text-danger">*</span></label>
+                        <select name="status" id="editStatus" class="form-select" required>
                             <option value="aktif">Aktif</option>
-                            <option value="nonaktif">Non-Aktif</option>
+                            <option value="nonaktif">Nonaktif</option>
                         </select>
                     </div>
                 </div>
-                <div class="modal-footer border-0">
-                    <button type="submit" class="btn btn-dark px-4 fw-semibold">Simpan</button>
-                    <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">Batal</button>
+                <div class="modal-footer" style="padding:16px 24px;gap:10px">
+                    <button type="submit" class="btn-elsafa px-4">Simpan</button>
+                    <button type="button" class="btn btn-outline-secondary fw-600"
+                            style="border-radius:8px" data-bs-dismiss="modal">Batal</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
-{{-- ============ MODAL KONFIRMASI HAPUS ============ --}}
-<div class="modal fade" id="modalHapusMitra" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-sm">
-        <div class="modal-content text-center p-3">
-            <div class="modal-body">
-                <div class="mb-3">
-                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-danger bg-opacity-10 p-3 mb-2">
-                        <i class="bi bi-trash3 text-danger fs-3"></i>
-                    </div>
-                </div>
-                <p class="fw-semibold">Apakah anda yakin ingin menghapus Mitra ini?</p>
-                <div class="d-flex gap-2 justify-content-center mt-3">
-                    <form method="POST" id="formHapusMitra">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger px-4">Hapus</button>
-                    </form>
-                    <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">Batal</button>
-                </div>
+{{-- ═══ MODAL HAPUS ═══ --}}
+<div class="modal fade" id="modalHapus" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered" style="max-width:380px">
+        <div class="modal-content border-0 rounded-4 p-4 text-center">
+            <div class="delete-icon-wrap"><i class="bi bi-trash3-fill"></i></div>
+            <p class="fw-600 mb-4" id="hapusMsg">Apakah anda yakin ingin menghapus Mitra ini?</p>
+            <div class="d-flex gap-3 justify-content-center">
+                <form id="hapusForm" method="POST">
+                    @csrf @method('DELETE')
+                    <button type="submit" class="btn-elsafa" style="background:var(--red)">
+                        <i class="bi bi-trash"></i> Hapus
+                    </button>
+                </form>
+                <button type="button" class="btn btn-outline-secondary fw-600"
+                        style="border-radius:8px" data-bs-dismiss="modal">Batal</button>
             </div>
         </div>
     </div>
 </div>
+@endsection
+
+@push('styles')
+<style>
+.filter-toggle-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #fff;
+    border: 1.5px solid #e9d9a0;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 13px;
+    cursor: pointer;
+    min-width: 200px;
+    transition: border-color 0.15s;
+}
+.filter-toggle-btn:hover { border-color: var(--gold); }
+
+.filter-popup {
+    position: absolute;
+    top: 46px;
+    left: 0;
+    width: 220px;
+    background: #fff;
+    border: 1.5px solid #e9ecef;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,.1);
+    padding: 14px;
+    z-index: 300;
+    display: none;
+}
+.filter-popup.show { display: block; }
+.filter-popup-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--navy);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    margin-bottom: 8px;
+}
+.filter-popup-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    margin-bottom: 6px;
+    color: #374151;
+}
+</style>
+@endpush
 
 @push('scripts')
 <script>
-// Open modal tambah jika ada validation error
-@if($errors->any() && old('_token'))
-    var addModal = new bootstrap.Modal(document.getElementById('modalTambahMitra'));
-    addModal.show();
-@endif
-
+// Filter toggle
+document.getElementById('filterToggle').addEventListener('click', function(e) {
+    e.stopPropagation();
+    document.getElementById('filterDropdown').classList.toggle('show');
+});
 document.addEventListener('click', function(e) {
-    const btnEdit = e.target.closest('.btn-edit-mitra');
-    if (btnEdit) {
-        const d = btnEdit.dataset;
-        openEditMitra(d.id, d.nama, d.kontak, d.status);
-    }
-
-    const btnHapus = e.target.closest('.btn-hapus-mitra');
-    if (btnHapus) {
-        confirmDeleteMitra(btnHapus.dataset.id);
+    const dd = document.getElementById('filterDropdown');
+    if (!document.getElementById('filterToggle').contains(e.target)) {
+        dd.classList.remove('show');
     }
 });
 
-// Edit Mitra
-function openEditMitra(id, nama, kontak, status) {
-    document.getElementById('formEditMitra').action = '/mitras/' + id;
-    document.getElementById('editNama').value = nama;
+function openTambah() {
+    new bootstrap.Modal(document.getElementById('modalTambah')).show();
+}
 
-    // Strip leading 0 for display
-    let k = kontak || '';
-    if (k.startsWith('0')) k = k.substring(1);
-    document.getElementById('editKontak').value = k;
+function openEdit(id, nama, kontak, status) {
+    document.getElementById('editForm').action = '/mitra/' + id;
+    document.getElementById('editNama').value   = nama;
+    document.getElementById('editKontak').value = kontak;
     document.getElementById('editStatus').value = status;
-
-    var modal = new bootstrap.Modal(document.getElementById('modalEditMitra'));
-    modal.show();
+    new bootstrap.Modal(document.getElementById('modalEdit')).show();
 }
 
-// Confirm Delete
-function confirmDeleteMitra(id, nama) {
-    document.getElementById('formHapusMitra').action = '/mitras/' + id;
-    var modal = new bootstrap.Modal(document.getElementById('modalHapusMitra'));
-    modal.show();
+function confirmHapus(id, nama) {
+    document.getElementById('hapusMsg').textContent =
+        'Apakah anda yakin ingin menghapus Mitra "' + nama + '"?';
+    document.getElementById('hapusForm').action = '/mitra/' + id;
+    new bootstrap.Modal(document.getElementById('modalHapus')).show();
 }
-
-// Format kontak input: strip leading 0
-document.getElementById('kontakInput')?.addEventListener('input', function() {
-    if (this.value.startsWith('0')) {
-        this.value = this.value.substring(1);
-    }
-});
 </script>
 @endpush
-@endsection

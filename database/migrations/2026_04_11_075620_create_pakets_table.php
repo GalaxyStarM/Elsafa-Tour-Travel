@@ -12,9 +12,8 @@ return new class extends Migration {
             $table->enum('jenis', ['haji', 'umroh'])->default('umroh');
             $table->text('deskripsi')->nullable();
             $table->bigInteger('harga')->default(0);
-            $table->date('tanggal_berangkat')->nullable();
-            $table->date('tanggal_kembali')->nullable();
-            $table->integer('kuota')->default(0);
+            $table->date('tanggal_keberangkatan')->nullable();
+            $table->integer('kuota')->nullable();
             $table->enum('status', ['aktif', 'nonaktif', 'selesai'])->default('aktif');
             $table->timestamps();
             $table->softDeletes();

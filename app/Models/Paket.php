@@ -11,12 +11,7 @@ class Paket extends Model
 
     protected $fillable = [
         'nama', 'jenis', 'deskripsi', 'harga',
-        'tanggal_berangkat', 'tanggal_kembali', 'kuota', 'status'
-    ];
-
-    protected $casts = [
-        'tanggal_berangkat' => 'date',
-        'tanggal_kembali'   => 'date',
+        'tanggal_keberangkatan', 'kuota', 'status'
     ];
 
     public function jamaah()

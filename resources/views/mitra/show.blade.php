@@ -5,7 +5,7 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div class="d-flex align-items-center gap-2">
-        <a href="{{ route('mitras.index') }}" class="btn btn-sm btn-outline-secondary">
+        <a href="{{ route('mitra.index') }}" class="btn btn-sm btn-outline-secondary">
             <i class="bi bi-arrow-left"></i>
         </a>
         <h4 class="fw-bold mb-0">{{ $mitra->nama }}</h4>
